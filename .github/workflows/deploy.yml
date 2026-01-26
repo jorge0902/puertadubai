@@ -1,0 +1,30 @@
+name: Despliegue a VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Obtener código más reciente
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Instalar dependencias y Construir
+        run: |
+          npm install
+          npm run build
+
+      - name: 🚀 Desplegar a VPS via rsync
+        uses: easingthemes/ssh-deploy@v4.1.8
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          SOURCE: "dist/" 
+          TARGET: "/var/www/html/"
+          ARGS: "-rlgoDzvc -i"
+          EXCLUDE: "/dist/, /node_modules/"

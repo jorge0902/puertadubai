@@ -66,17 +66,19 @@
             "id": "258a7445-8f3c-4ea8-99b2-684dba24de02",
             "retryOnFail": false,
             "onError": "continueErrorOutput",
-            "credentials": {
-                "httpHeaderAuth": {
-                    "id": "Puns5w7Q3WWhHGCY",
-                    "name": "Header Auth account"
-                }
-            },
             "parameters": {
                 "method": "POST",
                 "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
-                "authentication": "genericCredentialType",
-                "genericAuthType": "httpHeaderAuth",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                },
                 "sendBody": true,
                 "specifyBody": "json",
                 "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"Hola {{ $json.nombre || $json.body.Nombre }}, gracias por registrarte. Isabel te contactará en breve.\"\n  }\n}",

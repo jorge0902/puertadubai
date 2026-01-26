@@ -23,7 +23,7 @@ const RegistrationSection = ({ isOpen, onClose }: RegistrationPopupProps) => {
         setErrorMessage('');
 
         try {
-            const response = await fetch('https://n8n.puertadubai.online/webhook-test/registro-isabel', {
+            const response = await fetch('https://n8n.puertadubai.online/webhook/registro-isabel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
