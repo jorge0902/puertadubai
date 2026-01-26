@@ -1,0 +1,19 @@
+{
+    "nodes": [
+        {
+            "name": "Evolution API Final",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"{{ $json.WhatsApp }}\",\n  \"textMessage\": {\n    \"text\": \"Hola {{ $json.Nombre }}, gracias por registrarte. Isabel te contactará en breve.\"\n  }\n}",
+                "options": {}
+            }
+        }
+    ]
+}
