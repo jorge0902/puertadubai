@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+id_rsa_deploy
+id_rsa_deploy.pub
+.agent/*.js
+.agent/*.cjs
