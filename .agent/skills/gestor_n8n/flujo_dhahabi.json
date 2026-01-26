@@ -18,6 +18,34 @@
         },
         {
             "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.body.Nombre }}",
+                            "operation": "isNotEmpty"
+                        },
+                        {
+                            "value1": "={{ $json.body.WhatsApp }}",
+                            "operation": "isNotEmpty"
+                        },
+                        {
+                            "value1": "={{ $json.body.Email }}",
+                            "operation": "isNotEmpty"
+                        }
+                    ]
+                }
+            },
+            "name": "Validar Inputs",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                -100,
+                -48
+            ],
+            "id": "validation-node-id-123456"
+        },
+        {
+            "parameters": {
                 "tableId": "leads_isabel",
                 "fieldsUi": {
                     "fieldValues": [
@@ -44,7 +72,7 @@
             "type": "n8n-nodes-base.supabase",
             "typeVersion": 1,
             "position": [
-                32,
+                100,
                 -48
             ],
             "id": "24c57921-b7cf-4ba8-ae55-9fecdf54a673",
@@ -53,14 +81,17 @@
                     "id": "adwOlpOVzQbJ5lla",
                     "name": "Supabase account"
                 }
-            }
+            },
+            "retryOnFail": true,
+            "maxTries": 3,
+            "waitBetweenTries": 5000
         },
         {
             "name": "Evolution API Final",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.1,
             "position": [
-                304,
+                350,
                 -48
             ],
             "id": "258a7445-8f3c-4ea8-99b2-684dba24de02",
@@ -81,14 +112,14 @@
                 },
                 "sendBody": true,
                 "specifyBody": "json",
-                "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"¡Hola, {{ $node[\\\"Webhook\\\"].json[\\\"body\\\"][\\\"Nombre\\\"] }}! ✨ Qué gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Muchísimas gracias por registrarte y por tu interés en lo que estamos construyendo en Dubái. 🇦🇪\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electrónico: nuestro catálogo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. 📩\\n\\nDos cositas rápidas: 1️⃣ Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, ¡a veces Google se pone caprichoso! 😅). 2️⃣ Guarda mi número en tus contactos para que siempre estemos conectados por aquí.\\n\\nCualquier duda que tengas, solo escríbeme. ¡Estoy lista para ayudarte! 🚀\"\n  }\n}",
+                "jsonBody": "={\n  \"number\": \"{{ ($node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"¡Hola, {{ $node['Webhook'].json.body.Nombre }}! ✨ Qué gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Muchísimas gracias por registrarte y por tu interés en lo que estamos construyendo en Dubái. 🇦🇪\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electrónico: nuestro catálogo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. 📩\\n\\nDos cositas rápidas: 1️⃣ Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, ¡a veces Google se pone caprichoso! 😅). 2️⃣ Guarda mi número en tus contactos para que siempre estemos conectados por aquí.\\n\\nCualquier duda que tengas, solo escríbeme. ¡Estoy lista para ayudarte! 🚀\"\n  }\n}",
                 "options": {}
             }
         },
         {
             "parameters": {
                 "fromEmail": "puertadubbai@gmail.com",
-                "toEmail": "={{ $json.email || $json.body.Email }}",
+                "toEmail": "={{ $node['Webhook'].json.body.Email }}",
                 "subject": "¡Qué alegría saludarte! Bienvenido a la familia de Dhahabi Agency 🇦🇪",
                 "html": "<div style=\"font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto;\"><p>Hola, <strong>{{ $node[\"Webhook\"].json[\"body\"][\"Nombre\"] }}</strong>.</p><p>Te escribo personalmente para darte las gracias por haberte registrado con nosotros. En Dhahabi Agency, sabemos que detrás de cada registro hay un sueño, un proyecto o una nueva meta en Dubái, y nos hace mucha ilusión que hayas pensado en nosotros para acompañarte.</p><p>Soy Isabel, y mi misión es que tu experiencia con el mercado de los Emiratos sea lo más fluida y exitosa posible.</p><p>¿Qué he preparado para ti? Para empezar con buen pie, te comparto nuestro catálogo de servicios exclusivo. En él verás cómo ayudamos a personas como tú a establecerse, invertir y crecer en la ciudad del futuro.</p><p style=\"text-align:center; margin: 30px 0;\">👉 <a href=\"#\" style=\"background-color: #D4AF37; color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 4px;\">HAZ CLIC AQUÍ PARA DESCARGAR TU CATÁLOGO</a></p><div style=\"background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 14px;\">⚠️ <strong>Un pequeño favor:</strong> A veces, los correos de bienvenida se pierden en la carpeta de Spam o Promociones. Como no quiero que te pierdas ninguna de las oportunidades que vamos a enviarte, te agradecería mucho si pudieras mover este mensaje a tu Bandeja de Entrada Principal. ¡Así estaremos siempre conectados!</div><p>Nuevamente, gracias por confiar en nosotros. Estoy a un mensaje de distancia por WhatsApp si tienes cualquier duda inicial.</p><p>¡Hablamos muy pronto!</p><p>Un gran abrazo,<br><strong>Isabel | Dhahabi Agency</strong><br>Tu puente hacia el éxito en Dubái<br><a href=\"#\" style=\"color: #D4AF37;\">[Enlace a tu Instagram o Web]</a></p></div>",
                 "text": "Hola {{ $node[\"Webhook\"].json[\"body\"][\"Nombre\"] }},\n\nTe escribo personalmente para darte las gracias por haberte registrado con nosotros. En Dhahabi Agency, sabemos que detrás de cada registro hay un sueño, un proyecto o una nueva meta en Dubái.\n\nSoy Isabel, y mi misión es que tu experiencia con el mercado de los Emiratos sea lo más fluida y exitosa posible.\n\nTe comparto nuestro catálogo de servicios exclusivo aquí: [HAZ CLIC AQUÍ PARA DESCARGAR TU CATÁLOGO]\n\nUn pequeño favor: Si este correo llegó a Spam, por favor muévelo a tu Bandeja de Entrada Principal.\n\nNuevamente, gracias por confiar en nosotros.\n\nUn gran abrazo,\nIsabel | Dhahabi Agency",
@@ -100,7 +131,7 @@
             "type": "n8n-nodes-base.emailSend",
             "typeVersion": 2,
             "position": [
-                304,
+                350,
                 152
             ],
             "id": "e3b4a5d6-c7e8-4f9a-9b8c-1d2e3f4a5b6c",
@@ -114,6 +145,17 @@
     ],
     "connections": {
         "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Validar Inputs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Validar Inputs": {
             "main": [
                 [
                     {
