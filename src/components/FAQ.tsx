@@ -72,7 +72,7 @@ const FAQ = () => {
         },
         {
             question: "Método de pago y sedes",
-            answer: "Para facilitar las cosas a la comunidad en Cuba, el proceso y los pagos se coordinan directamente en nuestras sedes de Holguín y La Habana. También mediante transferencias bancarias, PayPal o pagos a través de familiares en el exterior. En caso de ser de otro país mediante transferencias bancarias, PayPal entre otros."
+            answer: "Para facilitar las cosas a la comunidad en Cuba, aceptamos Moneda Nacional (tanto en efectivo como por transferencia). El proceso y los pagos se coordinan directamente en nuestras sedes de Holguín y La Habana. También aceptamos pagos mediante transferencias bancarias internacionales, PayPal o pagos a través de familiares en el exterior."
         },
         {
             question: "¿Por qué confiar en Dhahabi Agency?",
