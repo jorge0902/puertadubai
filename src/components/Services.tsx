@@ -173,7 +173,7 @@ const Services = () => {
                 </div>
 
                 <motion.div
-                    className="flex md:grid md:grid-cols-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none gap-4 md:gap-6 items-stretch pt-4 pb-8 md:pb-0 scrollbar-hide"
+                    className="flex md:grid md:grid-cols-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none gap-4 md:gap-6 items-stretch pt-12 pb-8 md:pb-0 scrollbar-hide"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
