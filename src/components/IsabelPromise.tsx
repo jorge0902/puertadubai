@@ -22,7 +22,7 @@ const IsabelPromise = ({ onOpenModal }: { onOpenModal: () => void }) => {
                                 alt="Isabel - Tu amiga en Dubái"
                                 className="relative rounded-lg shadow-2xl w-full object-cover h-[400px] md:h-[600px]"
                             />
-                            <div className="absolute -bottom-6 -right-6 bg-cream p-6 rounded-lg shadow-xl border border-gold/20 max-w-xs hidden md:block">
+                            <div className="absolute -bottom-6 -right-6 bg-cream p-4 md:p-6 rounded-lg shadow-xl border border-gold/20 max-w-[200px] md:max-w-xs block">
                                 <p className="font-serif italic text-plum text-lg">"Dubái es increíble, pero con alguien que te cuide, es mucho mejor."</p>
                                 <p className="text-right text-rose font-bold text-sm mt-2">- Isabel</p>
                             </div>
