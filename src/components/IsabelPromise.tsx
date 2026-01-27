@@ -15,12 +15,12 @@ const IsabelPromise = ({ onOpenModal }: { onOpenModal: () => void }) => {
                         transition={{ duration: 0.6 }}
                         className="w-full lg:w-1/2"
                     >
-                        <div className="relative">
+                        <div className="relative p-4">
                             <div className="absolute -inset-4 bg-gold/10 rounded-lg transform -rotate-3"></div>
                             <img
                                 src="/isabel-promise-v2.jpg"
                                 alt="Isabel - Tu amiga en Dubái"
-                                className="relative rounded-lg shadow-2xl w-full object-cover h-[600px]"
+                                className="relative rounded-lg shadow-2xl w-full object-cover h-[400px] md:h-[600px]"
                             />
                             <div className="absolute -bottom-6 -right-6 bg-cream p-6 rounded-lg shadow-xl border border-gold/20 max-w-xs hidden md:block">
                                 <p className="font-serif italic text-plum text-lg">"Dubái es increíble, pero con alguien que te cuide, es mucho mejor."</p>
