@@ -18,7 +18,7 @@ const IsabelPromise = ({ onOpenModal }: { onOpenModal: () => void }) => {
                         <div className="relative">
                             <div className="absolute -inset-4 bg-gold/10 rounded-lg transform -rotate-3"></div>
                             <img
-                                src="/isabel-authority.png"
+                                src="/isabel-promise-v2.jpg"
                                 alt="Isabel - Tu amiga en Dubái"
                                 className="relative rounded-lg shadow-2xl w-full object-cover h-[600px]"
                             />

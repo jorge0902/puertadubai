@@ -30,11 +30,11 @@ function App() {
       <main>
         <Hero />
         <VideoSection />
+        <IsabelPromise onOpenModal={() => setShowModal(true)} />
         <WhyUs />
         <Services />
         <Offers />
         <About />
-        <IsabelPromise onOpenModal={() => setShowModal(true)} />
         <SecurityPillars />
         <FAQ />
       </main>
