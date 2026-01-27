@@ -60,7 +60,7 @@ const Hero = () => {
                         </div>
 
                         {/* Floating badge */}
-                        <div className="absolute bottom-8 -left-8 bg-white p-4 shadow-xl z-20 max-w-[180px] hidden md:block border-l-4 border-gold">
+                        <div className="absolute bottom-4 left-4 md:bottom-8 md:-left-8 bg-white p-4 shadow-xl z-20 max-w-[200px] md:max-w-[180px] block border-l-4 border-gold">
                             <p className="text-plum font-serif text-sm italic">
                                 "La llave de tu nueva vida en los Emiratos."
                             </p>
