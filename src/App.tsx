@@ -6,7 +6,7 @@ import VideoSection from './components/VideoSection';
 import WhyUs from './components/WhyUs';
 import Services from './components/Services';
 import Offers from './components/Offers';
-import Testimonials from './components/Testimonials';
+import IsabelPromise from './components/IsabelPromise';
 import FAQ from './components/FAQ';
 import About from './components/About';
 import Footer from './components/Footer';
@@ -34,7 +34,7 @@ function App() {
         <Services />
         <Offers />
         <About />
-        <Testimonials />
+        <IsabelPromise onOpenModal={() => setShowModal(true)} />
         <SecurityPillars />
         <FAQ />
       </main>
