@@ -1,9 +1,10 @@
 {
-    "Nombre": "Test Antigravity Encoding Verify",
-    "WhatsApp": "5358249692",
-    "Email": "jorgeraudelricardo@gmail.com",
-    "proximidad_viaje": "1-3 meses",
-    "presupuesto_rango": "2,000 - 4,000",
-    "meta_viaje": "Trabajo",
-    "interes_contacto": "Whatsapp"
+    "nombre": "Juan Carlos Repara",
+    "whatsapp": "53555999888",
+    "email": "juan.repara@test.com",
+    "interes": "Paquete VIP",
+    "proximidad_viaje": "Pronto",
+    "pasaporte_ok": "Si",
+    "presupuesto_rango": "B. Entre $2,000 y $4,000 USD",
+    "meta_viaje": "Vivir"
 }

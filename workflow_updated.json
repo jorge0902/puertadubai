@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-01-30T04:28:39.286Z",
+  "updatedAt": "2026-01-30T11:25:51.696Z",
   "createdAt": "2026-01-19T21:38:56.808Z",
   "id": "iB6MjmojzlgVQyWnzirJm",
   "name": "registro-isabel",
@@ -25,9 +25,9 @@
     },
     {
       "parameters": {
-        "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\nreturn {\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca est\u251c\u00eds hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo'),\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electr\u251c\u2502nico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
+        "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\n\n// Extraer primer nombre\nconst nombreCompleto = getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo');\nconst primerNombre = nombreCompleto ? nombreCompleto.split(' ')[0] : '';\nreturn {\n  json: {\n    body: {\n      PrimerNombre: primerNombre,\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca est\u00e1s hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo'),\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electr\u00f3nico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
       },
-      "name": "Tally Adapter",
+      "name": "Adaptador Web",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
@@ -103,7 +103,7 @@
             },
             {
               "fieldId": "es_vip",
-              "fieldValue": "={{ (($json.body.presupuesto_rango || '').toString().includes('4,000') || ($json.body.presupuesto_rango || '').toString().includes('Opci\u251c\u2502n C')) ? true : false }}"
+              "fieldValue": "={{ (($json.body.presupuesto_rango || '').toString().includes('4,000') || ($json.body.presupuesto_rango || '').toString().includes('Opci\u00f3n C')) ? true : false }}"
             }
           ]
         }
@@ -159,7 +159,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"number\": \"5358249692\",\n  \"textMessage\": {\n    \"text\": \"\u2261\u0192\u00dc\u00bf *ALERTA VIP* \u2261\u0192\u00dc\u00bf\\n\\n\u252c\u00edIsabel! Nuevo lead BALLENA detectado (+$4,000 USD). \u2261\u0192\u00c9\u00ef\\n\\n\u2261\u0192\u00e6\u00f1 *Nombre:* {{ $json.nombre }}\\n\u2261\u0192\u00f4\u2592 *WhatsApp:* {{ $json.whatsapp }}\\n\u2261\u0192\u00c6\u2591 *Presupuesto:* {{ $json.presupuesto_rango }}\\n\u2261\u0192\u00c4\u00bb *Meta:* {{ $json.meta_viaje }}\\n\\n\u252c\u00edRevisa Supabase!\"\n  }\n}",
+        "jsonBody": "={\n  \"number\": \"5358249692\",\n  \"textMessage\": {\n    \"text\": \"\ud83d\udea8 *ALERTA VIP* \ud83d\udea8\\n\\n\u00a1Isabel! Nuevo lead BALLENA detectado (+$4,000 USD). \ud83d\udc0b\\n\\n\ud83d\udc64 *Nombre:* {{ $json.nombre }}\\n\ud83d\udcf1 *WhatsApp:* {{ $json.whatsapp }}\\n\ud83d\udcb0 *Presupuesto:* {{ $json.presupuesto_rango }}\\n\ud83c\udfaf *Meta:* {{ $json.meta_viaje }}\\n\\n\u00a1Revisa Supabase!\"\n  }\n}",
         "options": {}
       },
       "name": "Alert Isabel Whatsapp",
@@ -197,7 +197,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp || $node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"\u252c\u00edHola, {{ ($json.nombre || $json.body.Nombre || $node['Webhook'].json.body.Nombre).toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}! \u0393\u00a3\u00bf Qu\u251c\u2310 gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Much\u251c\u00a1simas gracias por registrarte y por tu inter\u251c\u2310s en lo que estamos construyendo en Dub\u251c\u00edi. \u2261\u0192\u00e7\u00aa\u2261\u0192\u00e7\u00ac\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electr\u251c\u2502nico: nuestro cat\u251c\u00edlogo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. \u2261\u0192\u00f4\u2310\\n\\nDos cositas r\u251c\u00edpidas: 1\u2229\u2555\u00c5\u0393\u00e2\u00fa Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, \u252c\u00eda veces Google se pone caprichoso! \u2261\u0192\u00ff\u00e0). 2\u2229\u2555\u00c5\u0393\u00e2\u00fa Guarda mi n\u251c\u2551mero en tus contactos para que siempre estemos conectados por aqu\u251c\u00a1.\\n\\nCualquier duda que tengas, solo escr\u251c\u00a1beme. \u252c\u00edEstoy lista para ayudarte! \u2261\u0192\u00dc\u00c7\"\n  }\n}",
+        "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp || $node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"\u00a1Hola *{{ $node['Adaptador Web'].json.body.PrimerNombre }}*! \u2728 Qu\u00e9 gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Much\u00edsimas gracias por registrarte y por tu inter\u00e9s en lo que estamos construyendo en Dub\u00e1i. \ud83c\udde6\ud83c\uddea\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electr\u00f3nico: nuestro cat\u00e1logo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. \ud83d\udce9\\n\\nDos cositas r\u00e1pidas: 1\ufe0f\u20e3 Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, \u00a1a veces Google se pone caprichoso! \ud83d\ude05). 2\ufe0f\u20e3 Guarda mi n\u00famero en tus contactos para que siempre estemos conectados por aqu\u00ed.\\n\\nCualquier duda que tengas, solo escr\u00edbeme. \u00a1Estoy lista para ayudarte! \ud83d\ude80\"\n  }\n}",
         "options": {}
       }
     },
@@ -205,9 +205,9 @@
       "parameters": {
         "fromEmail": "puertadubbai@gmail.com",
         "toEmail": "={{ $json.email || $node['Webhook'].json.body.Email }}",
-        "subject": "\u252c\u00edBienvenido a Dub\u251c\u00edi! \u2261\u0192\u00e7\u00aa\u2261\u0192\u00e7\u00ac Tu viaje empieza hoy \u0393\u00a3\u00bf",
+        "subject": "\u00a1Bienvenido a Dub\u00e1i! \ud83c\udde6\ud83c\uddea Tu viaje empieza hoy \u2728",
         "emailFormat": "html",
-        "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;\">\n    <!-- Banner -->\n    <img src=\"http://62.84.189.155/imagenes/imagen1.jpg\" alt=\"Puerta Dub\u251c\u00edi\" style=\"width: 100%; max-width: 100%; height: auto; display: block;\">\n    \n    <div style=\"padding: 30px;\">\n        <p style=\"font-size: 16px; line-height: 1.6;\">\u252c\u00edHola <strong>{{ ($json.nombre || $node['Webhook'].json.body.Nombre || 'Futuro Residente').toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}</strong>! \u0393\u00a3\u00bf</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">No sabes la alegr\u251c\u00a1a que me da saludarte. Si est\u251c\u00eds leyendo esto, es porque algo dentro de ti ya empez\u251c\u2502 a viajar hacia los Emiratos. \u2261\u0192\u00e7\u00aa\u2261\u0192\u00e7\u00ac\u0393\u00a3\u00ea\u2229\u2555\u00c5</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">S\u251c\u2310 que dar el paso impone respeto \u0393\u00c7\u00f6yo tambi\u251c\u2310n estuve ah\u251c\u00a1\u0393\u00c7\u00f6, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Estoy aqu\u251c\u00a1 para ser esa amiga experta que te gu\u251c\u00a1a, te cuida y te ahorra los dolores de cabeza que yo pas\u251c\u2310. Mi misi\u251c\u2502n en <em>Dhahabi Agency</em> no es venderte un tr\u251c\u00edmite, es asegurarme de que tu llegada sea un \u251c\u2310xito.</p>\n        \n        <div style=\"text-align: center; margin: 30px 0;\">\n            <a href=\"https://drive.google.com/uc?export=download&id=1tIqYM9A0fQFF2KILaT204j_07bQ-TtLv\" style=\"background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);\">Descargar Cat\u251c\u00edlogo \u2261\u0192\u00f4\u2310</a>\n        </div>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">\u251c\u00ebchale un vistazo con calma, visual\u251c\u00a1zate all\u251c\u00a1... y cuando est\u251c\u2310s listo, hablamos.</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6; margin-top: 40px;\">Con cari\u251c\u2592o,</p>\n        \n        <div style=\"margin-top: 10px;\">\n            <strong style=\"font-size: 18px;\">Isabel</strong><br>\n            <span style=\"color: #666;\">CEO, Dhahabi Agency</span>\n        </div>\n        \n        <!-- Footer -->\n        <div style=\"margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;\">\n            <!-- Logo Puerta Dub\u251c\u00edi -->\n            <img src=\"http://62.84.189.155/imagenes/logo%20puertadubai.png\" alt=\"Puerta Dub\u251c\u00edi\" style=\"max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;\">\n            \n            <p style=\"font-size: 10px; color: #bbb;\">\u252c\u2310 2026 Dhahabi Agency</p>\n        </div>\n    </div>\n</div>",
+        "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;\">\n    <!-- Banner -->\n    <img src=\"http://62.84.189.155/imagenes/imagen1.jpg\" alt=\"Puerta Dub\u00e1i\" style=\"width: 100%; max-width: 100%; height: auto; display: block;\">\n    \n    <div style=\"padding: 30px;\">\n        <p style=\"font-size: 16px; line-height: 1.6;\">\u00a1Hola <strong>{{ $node['Adaptador Web'].json.body.PrimerNombre }}</strong>! \u2728</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">No sabes la alegr\u00eda que me da saludarte. Si est\u00e1s leyendo esto, es porque algo dentro de ti ya empez\u00f3 a viajar hacia los Emiratos. \ud83c\udde6\ud83c\uddea\u2708\ufe0f</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">S\u00e9 que dar el paso impone respeto \u2014yo tambi\u00e9n estuve ah\u00ed\u2014, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Estoy aqu\u00ed para ser esa amiga experta que te gu\u00eda, te cuida y te ahorra los dolores de cabeza que yo pas\u00e9. Mi misi\u00f3n en <em>Dhahabi Agency</em> no es venderte un tr\u00e1mite, es asegurarme de que tu llegada sea un \u00e9xito.</p>\n        \n        <div style=\"text-align: center; margin: 30px 0;\">\n            <a href=\"https://drive.google.com/uc?export=download&id=1tIqYM9A0fQFF2KILaT204j_07bQ-TtLv\" style=\"background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);\">Descargar Cat\u00e1logo \ud83d\udce9</a>\n        </div>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">\u00c9chale un vistazo con calma, visual\u00edzate all\u00ed... y cuando est\u00e9s listo, hablamos.</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6; margin-top: 40px;\">Con cari\u00f1o,</p>\n        \n        <div style=\"margin-top: 10px;\">\n            <strong style=\"font-size: 18px;\">Isabel</strong><br>\n            <span style=\"color: #666;\">CEO, Dhahabi Agency</span>\n        </div>\n        \n        <!-- Footer -->\n        <div style=\"margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;\">\n            <!-- Logo Puerta Dub\u00e1i -->\n            <img src=\"http://62.84.189.155/imagenes/logo%20puertadubai.png\" alt=\"Puerta Dub\u00e1i\" style=\"max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;\">\n            \n            <p style=\"font-size: 10px; color: #bbb;\">\u00a9 2026 Dhahabi Agency</p>\n        </div>\n    </div>\n</div>",
         "options": {
           "allowUnauthorizedCerts": true
         }
@@ -233,14 +233,14 @@
       "main": [
         [
           {
-            "node": "Tally Adapter",
+            "node": "Adaptador Web",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Tally Adapter": {
+    "Adaptador Web": {
       "main": [
         [
           {
@@ -305,9 +305,9 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "01603975-9f98-4cfd-83e8-5ea12ea3a565",
-  "activeVersionId": "01603975-9f98-4cfd-83e8-5ea12ea3a565",
-  "versionCounter": 184,
+  "versionId": "c3d1e3a0-b2a6-47b5-a211-49be13e6c240",
+  "activeVersionId": "c3d1e3a0-b2a6-47b5-a211-49be13e6c240",
+  "versionCounter": 193,
   "triggerCount": 1,
   "shared": [
     {
@@ -369,9 +369,9 @@
   ],
   "tags": [],
   "activeVersion": {
-    "updatedAt": "2026-01-30T04:28:39.289Z",
-    "createdAt": "2026-01-30T04:28:39.289Z",
-    "versionId": "01603975-9f98-4cfd-83e8-5ea12ea3a565",
+    "updatedAt": "2026-01-30T11:25:51.702Z",
+    "createdAt": "2026-01-30T11:25:51.702Z",
+    "versionId": "c3d1e3a0-b2a6-47b5-a211-49be13e6c240",
     "workflowId": "iB6MjmojzlgVQyWnzirJm",
     "nodes": [
       {
@@ -392,9 +392,9 @@
       },
       {
         "parameters": {
-          "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\nreturn {\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca est\u251c\u00eds hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo'),\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electr\u251c\u2502nico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
+          "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\nreturn {\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca est\u00e1s hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo'),\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electr\u00f3nico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
         },
-        "name": "Tally Adapter",
+        "name": "Adaptador Web",
         "type": "n8n-nodes-base.code",
         "typeVersion": 1,
         "position": [
@@ -470,7 +470,7 @@
               },
               {
                 "fieldId": "es_vip",
-                "fieldValue": "={{ (($json.body.presupuesto_rango || '').toString().includes('4,000') || ($json.body.presupuesto_rango || '').toString().includes('Opci\u251c\u2502n C')) ? true : false }}"
+                "fieldValue": "={{ (($json.body.presupuesto_rango || '').toString().includes('4,000') || ($json.body.presupuesto_rango || '').toString().includes('Opci\u00f3n C')) ? true : false }}"
               }
             ]
           }
@@ -526,7 +526,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n  \"number\": \"5358249692\",\n  \"textMessage\": {\n    \"text\": \"\u2261\u0192\u00dc\u00bf *ALERTA VIP* \u2261\u0192\u00dc\u00bf\\n\\n\u252c\u00edIsabel! Nuevo lead BALLENA detectado (+$4,000 USD). \u2261\u0192\u00c9\u00ef\\n\\n\u2261\u0192\u00e6\u00f1 *Nombre:* {{ $json.nombre }}\\n\u2261\u0192\u00f4\u2592 *WhatsApp:* {{ $json.whatsapp }}\\n\u2261\u0192\u00c6\u2591 *Presupuesto:* {{ $json.presupuesto_rango }}\\n\u2261\u0192\u00c4\u00bb *Meta:* {{ $json.meta_viaje }}\\n\\n\u252c\u00edRevisa Supabase!\"\n  }\n}",
+          "jsonBody": "={\n  \"number\": \"5358249692\",\n  \"textMessage\": {\n    \"text\": \"\ud83d\udea8 *ALERTA VIP* \ud83d\udea8\\n\\n\u00a1Isabel! Nuevo lead BALLENA detectado (+$4,000 USD). \ud83d\udc0b\\n\\n\ud83d\udc64 *Nombre:* {{ $json.nombre }}\\n\ud83d\udcf1 *WhatsApp:* {{ $json.whatsapp }}\\n\ud83d\udcb0 *Presupuesto:* {{ $json.presupuesto_rango }}\\n\ud83c\udfaf *Meta:* {{ $json.meta_viaje }}\\n\\n\u00a1Revisa Supabase!\"\n  }\n}",
           "options": {}
         },
         "name": "Alert Isabel Whatsapp",
@@ -564,7 +564,7 @@
           },
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp || $node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"\u252c\u00edHola, {{ ($json.nombre || $json.body.Nombre || $node['Webhook'].json.body.Nombre).toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}! \u0393\u00a3\u00bf Qu\u251c\u2310 gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Much\u251c\u00a1simas gracias por registrarte y por tu inter\u251c\u2310s en lo que estamos construyendo en Dub\u251c\u00edi. \u2261\u0192\u00e7\u00aa\u2261\u0192\u00e7\u00ac\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electr\u251c\u2502nico: nuestro cat\u251c\u00edlogo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. \u2261\u0192\u00f4\u2310\\n\\nDos cositas r\u251c\u00edpidas: 1\u2229\u2555\u00c5\u0393\u00e2\u00fa Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, \u252c\u00eda veces Google se pone caprichoso! \u2261\u0192\u00ff\u00e0). 2\u2229\u2555\u00c5\u0393\u00e2\u00fa Guarda mi n\u251c\u2551mero en tus contactos para que siempre estemos conectados por aqu\u251c\u00a1.\\n\\nCualquier duda que tengas, solo escr\u251c\u00a1beme. \u252c\u00edEstoy lista para ayudarte! \u2261\u0192\u00dc\u00c7\"\n  }\n}",
+          "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp || $node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"\u00a1Hola, {{ ($json.nombre || $json.body.Nombre || $node['Webhook'].json.body.Nombre).toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}! \u2728 Qu\u00e9 gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Much\u00edsimas gracias por registrarte y por tu inter\u00e9s en lo que estamos construyendo en Dub\u00e1i. \ud83c\udde6\ud83c\uddea\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electr\u00f3nico: nuestro cat\u00e1logo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. \ud83d\udce9\\n\\nDos cositas r\u00e1pidas: 1\ufe0f\u20e3 Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, \u00a1a veces Google se pone caprichoso! \ud83d\ude05). 2\ufe0f\u20e3 Guarda mi n\u00famero en tus contactos para que siempre estemos conectados por aqu\u00ed.\\n\\nCualquier duda que tengas, solo escr\u00edbeme. \u00a1Estoy lista para ayudarte! \ud83d\ude80\"\n  }\n}",
           "options": {}
         }
       },
@@ -572,9 +572,9 @@
         "parameters": {
           "fromEmail": "puertadubbai@gmail.com",
           "toEmail": "={{ $json.email || $node['Webhook'].json.body.Email }}",
-          "subject": "\u252c\u00edBienvenido a Dub\u251c\u00edi! \u2261\u0192\u00e7\u00aa\u2261\u0192\u00e7\u00ac Tu viaje empieza hoy \u0393\u00a3\u00bf",
+          "subject": "\u00a1Bienvenido a Dub\u00e1i! \ud83c\udde6\ud83c\uddea Tu viaje empieza hoy \u2728",
           "emailFormat": "html",
-          "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;\">\n    <!-- Banner -->\n    <img src=\"http://62.84.189.155/imagenes/imagen1.jpg\" alt=\"Puerta Dub\u251c\u00edi\" style=\"width: 100%; max-width: 100%; height: auto; display: block;\">\n    \n    <div style=\"padding: 30px;\">\n        <p style=\"font-size: 16px; line-height: 1.6;\">\u252c\u00edHola <strong>{{ ($json.nombre || $node['Webhook'].json.body.Nombre || 'Futuro Residente').toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}</strong>! \u0393\u00a3\u00bf</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">No sabes la alegr\u251c\u00a1a que me da saludarte. Si est\u251c\u00eds leyendo esto, es porque algo dentro de ti ya empez\u251c\u2502 a viajar hacia los Emiratos. \u2261\u0192\u00e7\u00aa\u2261\u0192\u00e7\u00ac\u0393\u00a3\u00ea\u2229\u2555\u00c5</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">S\u251c\u2310 que dar el paso impone respeto \u0393\u00c7\u00f6yo tambi\u251c\u2310n estuve ah\u251c\u00a1\u0393\u00c7\u00f6, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Estoy aqu\u251c\u00a1 para ser esa amiga experta que te gu\u251c\u00a1a, te cuida y te ahorra los dolores de cabeza que yo pas\u251c\u2310. Mi misi\u251c\u2502n en <em>Dhahabi Agency</em> no es venderte un tr\u251c\u00edmite, es asegurarme de que tu llegada sea un \u251c\u2310xito.</p>\n        \n        <div style=\"text-align: center; margin: 30px 0;\">\n            <a href=\"https://soytu.puertadubai.online/catalogo.pdf\" style=\"background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);\">Descargar Cat\u251c\u00edlogo \u2261\u0192\u00f4\u2310</a>\n        </div>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">\u251c\u00ebchale un vistazo con calma, visual\u251c\u00a1zate all\u251c\u00a1... y cuando est\u251c\u2310s listo, hablamos.</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6; margin-top: 40px;\">Con cari\u251c\u2592o,</p>\n        \n        <div style=\"margin-top: 10px;\">\n            <strong style=\"font-size: 18px;\">Isabel</strong><br>\n            <span style=\"color: #666;\">CEO, Dhahabi Agency</span>\n        </div>\n        \n        <!-- Footer -->\n        <div style=\"margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;\">\n            <!-- Logo Puerta Dub\u251c\u00edi -->\n            <img src=\"http://62.84.189.155/imagenes/logo%20puertadubai.png\" alt=\"Puerta Dub\u251c\u00edi\" style=\"max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;\">\n            \n            <p style=\"font-size: 10px; color: #bbb;\">\u252c\u2310 2026 Dhahabi Agency</p>\n        </div>\n    </div>\n</div>",
+          "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;\">\n    <!-- Banner -->\n    <img src=\"http://62.84.189.155/imagenes/imagen1.jpg\" alt=\"Puerta Dub\u00e1i\" style=\"width: 100%; max-width: 100%; height: auto; display: block;\">\n    \n    <div style=\"padding: 30px;\">\n        <p style=\"font-size: 16px; line-height: 1.6;\">\u00a1Hola <strong>{{ ($json.nombre || $node['Webhook'].json.body.Nombre || 'Futuro Residente').toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}</strong>! \u2728</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">No sabes la alegr\u00eda que me da saludarte. Si est\u00e1s leyendo esto, es porque algo dentro de ti ya empez\u00f3 a viajar hacia los Emiratos. \ud83c\udde6\ud83c\uddea\u2708\ufe0f</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">S\u00e9 que dar el paso impone respeto \u2014yo tambi\u00e9n estuve ah\u00ed\u2014, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Estoy aqu\u00ed para ser esa amiga experta que te gu\u00eda, te cuida y te ahorra los dolores de cabeza que yo pas\u00e9. Mi misi\u00f3n en <em>Dhahabi Agency</em> no es venderte un tr\u00e1mite, es asegurarme de que tu llegada sea un \u00e9xito.</p>\n        \n        <div style=\"text-align: center; margin: 30px 0;\">\n            <a href=\"https://drive.google.com/uc?export=download&id=1tIqYM9A0fQFF2KILaT204j_07bQ-TtLv\" style=\"background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);\">Descargar Cat\u00e1logo \ud83d\udce9</a>\n        </div>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">\u00c9chale un vistazo con calma, visual\u00edzate all\u00ed... y cuando est\u00e9s listo, hablamos.</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6; margin-top: 40px;\">Con cari\u00f1o,</p>\n        \n        <div style=\"margin-top: 10px;\">\n            <strong style=\"font-size: 18px;\">Isabel</strong><br>\n            <span style=\"color: #666;\">CEO, Dhahabi Agency</span>\n        </div>\n        \n        <!-- Footer -->\n        <div style=\"margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;\">\n            <!-- Logo Puerta Dub\u00e1i -->\n            <img src=\"http://62.84.189.155/imagenes/logo%20puertadubai.png\" alt=\"Puerta Dub\u00e1i\" style=\"max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;\">\n            \n            <p style=\"font-size: 10px; color: #bbb;\">\u00a9 2026 Dhahabi Agency</p>\n        </div>\n    </div>\n</div>",
           "options": {
             "allowUnauthorizedCerts": true
           }
@@ -600,14 +600,14 @@
         "main": [
           [
             {
-              "node": "Tally Adapter",
+              "node": "Adaptador Web",
               "type": "main",
               "index": 0
             }
           ]
         ]
       },
-      "Tally Adapter": {
+      "Adaptador Web": {
         "main": [
           [
             {
@@ -668,10 +668,10 @@
     "autosaved": false,
     "workflowPublishHistory": [
       {
-        "createdAt": "2026-01-30T04:28:39.523Z",
-        "id": 59,
+        "createdAt": "2026-01-30T11:25:51.886Z",
+        "id": 62,
         "workflowId": "iB6MjmojzlgVQyWnzirJm",
-        "versionId": "01603975-9f98-4cfd-83e8-5ea12ea3a565",
+        "versionId": "c3d1e3a0-b2a6-47b5-a211-49be13e6c240",
         "event": "activated",
         "userId": "2d259069-42d7-4593-8680-376787b66485"
       }
