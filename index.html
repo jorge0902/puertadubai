@@ -12,32 +12,7 @@
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Tally Pop-up Integration -->
-  <script async src="https://tally.so/widgets/embed.js"></script>
-  <script>
-    window.addEventListener('load', function () {
-      console.log("Page loaded. Starting Tally timer...");
-      setTimeout(function () {
-        console.log("Timer finished. Checking Tally...");
-        // Safe check if Tally is loaded
-        if (typeof Tally !== 'undefined') {
-          console.log("Tally found. Opening popup...");
-          Tally.openPopup('KYV9VM', {
-            layout: 'modal',
-            width: 500,
-            emoji: {
-              text: "👋",
-              animation: "wave"
-            },
-            autoClose: 0,
-            // doNotShowAfterSubmit: true // Commented out for debugging
-          });
-        } else {
-          console.error("Tally object not found!");
-        }
-      }, 2000); // 2000ms delay rule
-    });
-  </script>
+
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import SecurityPillars from './components/SecurityPillars';
@@ -11,7 +11,7 @@ import FAQ from './components/FAQ';
 import About from './components/About';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
-import RegistrationSection from './components/RegistrationSection';
+const LeadForm = lazy(() => import('./components/LeadForm'));
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowModal(true);
-    }, 60000); // 1 minute
+    }, 2000); // 2 seconds
 
     return () => clearTimeout(timer);
   }, []);
@@ -39,7 +39,9 @@ function App() {
         <FAQ />
       </main>
 
-      <RegistrationSection isOpen={showModal} onClose={() => setShowModal(false)} />
+      <Suspense fallback={null}>
+        <LeadForm isOpen={showModal} onClose={() => setShowModal(false)} />
+      </Suspense>
 
       <Footer />
       <FloatingWhatsApp />

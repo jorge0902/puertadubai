@@ -1,4 +1,5 @@
 {
+    "name": "registro-isabel",
     "nodes": [
         {
             "parameters": {
@@ -15,6 +16,19 @@
             ],
             "id": "460f1e98-2870-4ceb-9a94-53162733b4f0",
             "webhookId": "a3832d6a-3b62-4feb-aa88-bbccdbed69a9"
+        },
+        {
+            "parameters": {
+                "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\nreturn {\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca estás hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo'),\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electrónico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
+            },
+            "name": "Tally Adapter",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                -80,
+                -48
+            ],
+            "id": "tally-adapter-node"
         },
         {
             "parameters": {
@@ -39,7 +53,7 @@
             "type": "n8n-nodes-base.if",
             "typeVersion": 1,
             "position": [
-                -100,
+                120,
                 -48
             ],
             "id": "validation-node-blindaje"
@@ -62,28 +76,28 @@
                             "fieldValue": "={{ $json.body.Email }}"
                         },
                         {
-                            "fieldId": "paquete",
-                            "fieldValue": "={{ $json.body.Interes }}"
+                            "fieldId": "proximidad_viaje",
+                            "fieldValue": "={{ $json.body.proximidad_viaje }}"
                         },
                         {
-                            "fieldId": "profesion",
-                            "fieldValue": "={{ $json.body.Profesion || $json.body.profesion }}"
+                            "fieldId": "pasaporte_ok",
+                            "fieldValue": "={{ $json.body.pasaporte_ok }}"
                         },
                         {
-                            "fieldId": "pasaporte",
-                            "fieldValue": "={{ $json.body.Pasaporte || $json.body.pasaporte }}"
+                            "fieldId": "presupuesto_rango",
+                            "fieldValue": "={{ $json.body.presupuesto_rango }}"
                         },
                         {
-                            "fieldId": "presupuesto",
-                            "fieldValue": "={{ $json.body.Presupuesto || $json.body.presupuesto }}"
+                            "fieldId": "meta_viaje",
+                            "fieldValue": "={{ $json.body.meta_viaje }}"
                         },
                         {
-                            "fieldId": "objetivo_viaje",
-                            "fieldValue": "={{ $json.body.Objetivo || $json.body['Objetivo del viaje'] || $json.body.objetivo_viaje }}"
+                            "fieldId": "interes_contacto",
+                            "fieldValue": "={{ $json.body.interes_contacto }}"
                         },
                         {
                             "fieldId": "es_vip",
-                            "fieldValue": "={{ (($json.body.Presupuesto || $json.body.presupuesto || '').toString().includes('4,000')) ? true : false }}"
+                            "fieldValue": "={{ (($json.body.presupuesto_rango || '').toString().includes('4,000') || ($json.body.presupuesto_rango || '').toString().includes('Opción C')) ? true : false }}"
                         }
                     ]
                 }
@@ -92,7 +106,7 @@
             "type": "n8n-nodes-base.supabase",
             "typeVersion": 1,
             "position": [
-                100,
+                320,
                 -48
             ],
             "id": "24c57921-b7cf-4ba8-ae55-9fecdf54a673",
@@ -104,12 +118,60 @@
             }
         },
         {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.es_vip }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "name": "Check VIP",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                550,
+                150
+            ],
+            "id": "check-vip-node"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"5358249692\",\n  \"textMessage\": {\n    \"text\": \"🚨 *ALERTA VIP* 🚨\\n\\n¡Isabel! Nuevo lead BALLENA detectado (+$4,000 USD). 🐋\\n\\n👤 *Nombre:* {{ $json.nombre }}\\n📱 *WhatsApp:* {{ $json.whatsapp }}\\n💰 *Presupuesto:* {{ $json.presupuesto_rango }}\\n🎯 *Meta:* {{ $json.meta_viaje }}\\n\\n¡Revisa Supabase!\"\n  }\n}",
+                "options": {}
+            },
+            "name": "Alert Isabel Whatsapp",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                780,
+                150
+            ],
+            "id": "alert-isabel-node"
+        },
+        {
             "name": "Evolution API Final",
             "type": "n8n-nodes-base.httpRequest",
             "typeVersion": 4.1,
             "position": [
-                350,
-                -140
+                550,
+                -180
             ],
             "id": "258a7445-8f3c-4ea8-99b2-684dba24de02",
             "retryOnFail": false,
@@ -148,8 +210,8 @@
             "type": "n8n-nodes-base.emailSend",
             "typeVersion": 2,
             "position": [
-                350,
-                60
+                550,
+                0
             ],
             "id": "e4f8d9c2-premium-email",
             "credentials": {
@@ -204,6 +266,22 @@
                     },
                     {
                         "node": "Gmail SMTP",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Check VIP",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check VIP": {
+            "main": [
+                [
+                    {
+                        "node": "Alert Isabel Whatsapp",
                         "type": "main",
                         "index": 0
                     }

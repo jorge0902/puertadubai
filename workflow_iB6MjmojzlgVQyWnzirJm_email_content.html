@@ -1,0 +1,35 @@
+=<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;">
+    <!-- Banner -->
+    <img src="http://62.84.189.155/imagenes/imagen1.jpg" alt="Puerta Dubái" style="width: 100%; max-width: 100%; height: auto; display: block;">
+    
+    <div style="padding: 30px;">
+        <p style="font-size: 16px; line-height: 1.6;">¡Hola <strong>{{ ($json.nombre || $node['Webhook'].json.body.Nombre || 'Futuro Residente').toString().toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) }}</strong>! ✨</p>
+        
+        <p style="font-size: 16px; line-height: 1.6;">No sabes la alegría que me da saludarte. Si estás leyendo esto, es porque algo dentro de ti ya empezó a viajar hacia los Emiratos. 🇦🇪✈️</p>
+        
+        <p style="font-size: 16px; line-height: 1.6;">Sé que dar el paso impone respeto —yo también estuve ahí—, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>
+        
+        <p style="font-size: 16px; line-height: 1.6;">Estoy aquí para ser esa amiga experta que te guía, te cuida y te ahorra los dolores de cabeza que yo pasé. Mi misión en <em>Dhahabi Agency</em> no es venderte un trámite, es asegurarme de que tu llegada sea un éxito.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="https://soytu.puertadubai.online/catalogo.pdf" style="background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);">Descargar Catálogo 📩</a>
+        </div>
+        
+        <p style="font-size: 16px; line-height: 1.6;">Échale un vistazo con calma, visualízate allí... y cuando estés listo, hablamos.</p>
+        
+        <p style="font-size: 16px; line-height: 1.6; margin-top: 40px;">Con cariño,</p>
+        
+        <div style="margin-top: 10px;">
+            <strong style="font-size: 18px;">Isabel</strong><br>
+            <span style="color: #666;">CEO, Dhahabi Agency</span>
+        </div>
+        
+        <!-- Footer -->
+        <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;">
+            <!-- Logo Puerta Dubái -->
+            <img src="http://62.84.189.155/imagenes/logo%20puertadubai.png" alt="Puerta Dubái" style="max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;">
+            
+            <p style="font-size: 10px; color: #bbb;">© 2026 Dhahabi Agency</p>
+        </div>
+    </div>
+</div>

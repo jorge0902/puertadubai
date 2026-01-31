@@ -19,7 +19,7 @@ const VideoSection = () => {
                                 <span className="text-gold">Lo que nadie te cuenta.</span>
                             </h2>
                             <p className="text-plum/80 mb-6 leading-relaxed">
-                                En este vídeo de 3 minutos, te explico por qué el 90% de las personas fallan al intentar mudarse a Dubái y cómo mi metodología te garantiza entrar por la puerta grande.
+                                En este vídeo de 3 minutos, te explico por qué el 90% de las personas fallan al intentar mudarse a Dubai y es por falta de información aquí te doy una información mas detallada de lo que debes saber para dar tus primeros pasos y cómo mi metodología te garantiza entrar por la puerta grande.
                             </p>
                             <p className="font-serif italic text-rose">
                                 — Isabel, Fundadora.
