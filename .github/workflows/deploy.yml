@@ -30,7 +30,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "."
-        target: "/var/www/html_nueva"
+        target: "/var/www/puerta_dubai"
         strip_components: 0
 
     - name: Build on VPS
@@ -41,6 +41,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           # Use Docker to build to avoid dependency hell on host
-          docker run --rm -v /var/www/html_nueva:/app -w /app node:20 bash -c 'npm install && npm run build'
+          docker run --rm -v /var/www/puerta_dubai:/app -w /app node:20 bash -c 'npm install && npm run build'
           # Reload Nginx just in case
           systemctl reload nginx
