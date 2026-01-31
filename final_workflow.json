@@ -1,0 +1,214 @@
+{
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "registro-isabel",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                -240,
+                -48
+            ],
+            "id": "460f1e98-2870-4ceb-9a94-53162733b4f0",
+            "webhookId": "a3832d6a-3b62-4feb-aa88-bbccdbed69a9"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.body.Nombre }}",
+                            "operation": "isNotEmpty"
+                        },
+                        {
+                            "value1": "={{ $json.body.WhatsApp }}",
+                            "operation": "isNotEmpty"
+                        },
+                        {
+                            "value1": "={{ $json.body.Email }}",
+                            "operation": "isNotEmpty"
+                        }
+                    ]
+                }
+            },
+            "name": "Validar Inputs",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                -100,
+                -48
+            ],
+            "id": "validation-node-blindaje"
+        },
+        {
+            "parameters": {
+                "tableId": "leads_isabel",
+                "fieldsUi": {
+                    "fieldValues": [
+                        {
+                            "fieldId": "nombre",
+                            "fieldValue": "={{ ($json.body.Nombre || '').toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}"
+                        },
+                        {
+                            "fieldId": "whatsapp",
+                            "fieldValue": "={{ $json.body.WhatsApp }}"
+                        },
+                        {
+                            "fieldId": "email",
+                            "fieldValue": "={{ $json.body.Email }}"
+                        },
+                        {
+                            "fieldId": "paquete",
+                            "fieldValue": "={{ $json.body.Interes }}"
+                        },
+                        {
+                            "fieldId": "profesion",
+                            "fieldValue": "={{ $json.body.Profesion || $json.body.profesion }}"
+                        },
+                        {
+                            "fieldId": "pasaporte",
+                            "fieldValue": "={{ $json.body.Pasaporte || $json.body.pasaporte }}"
+                        },
+                        {
+                            "fieldId": "presupuesto",
+                            "fieldValue": "={{ $json.body.Presupuesto || $json.body.presupuesto }}"
+                        },
+                        {
+                            "fieldId": "objetivo_viaje",
+                            "fieldValue": "={{ $json.body.Objetivo || $json.body['Objetivo del viaje'] || $json.body.objetivo_viaje }}"
+                        },
+                        {
+                            "fieldId": "es_vip",
+                            "fieldValue": "={{ (($json.body.Presupuesto || $json.body.presupuesto || '').toString().includes('4,000')) ? true : false }}"
+                        }
+                    ]
+                }
+            },
+            "name": "Supabase",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                100,
+                -48
+            ],
+            "id": "24c57921-b7cf-4ba8-ae55-9fecdf54a673",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "adwOlpOVzQbJ5lla",
+                    "name": "Supabase account"
+                }
+            }
+        },
+        {
+            "name": "Evolution API Final",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                350,
+                -140
+            ],
+            "id": "258a7445-8f3c-4ea8-99b2-684dba24de02",
+            "retryOnFail": false,
+            "onError": "continueErrorOutput",
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp || $node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"¡Hola, {{ ($json.nombre || $json.body.Nombre || $node['Webhook'].json.body.Nombre).toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}! ✨ Qué gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Muchísimas gracias por registrarte y por tu interés en lo que estamos construyendo en Dubái. 🇦🇪\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electrónico: nuestro catálogo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. 📩\\n\\nDos cositas rápidas: 1️⃣ Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, ¡a veces Google se pone caprichoso! 😅). 2️⃣ Guarda mi número en tus contactos para que siempre estemos conectados por aquí.\\n\\nCualquier duda que tengas, solo escríbeme. ¡Estoy lista para ayudarte! 🚀\"\n  }\n}",
+                "options": {}
+            }
+        },
+        {
+            "parameters": {
+                "fromEmail": "puertadubbai@gmail.com",
+                "toEmail": "={{ $json.email || $node['Webhook'].json.body.Email }}",
+                "subject": "¡Bienvenido a Dubái! 🇦🇪 Tu viaje empieza hoy ✨",
+                "emailFormat": "html",
+                "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;\">\n    <!-- Banner -->\n    <img src=\"http://62.84.189.155/imagenes/imagen1.jpg\" alt=\"Puerta Dubái\" style=\"width: 100%; max-width: 100%; height: auto; display: block;\">\n    \n    <div style=\"padding: 30px;\">\n        <p style=\"font-size: 16px; line-height: 1.6;\">¡Hola <strong>{{ ($json.nombre || $node['Webhook'].json.body.Nombre || 'Futuro Residente').toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}</strong>! ✨</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">No sabes la alegría que me da saludarte. Si estás leyendo esto, es porque algo dentro de ti ya empezó a viajar hacia los Emiratos. 🇦🇪✈️</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Sé que dar el paso impone respeto —yo también estuve ahí—, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Estoy aquí para ser esa amiga experta que te guía, te cuida y te ahorra los dolores de cabeza que yo pasé. Mi misión en <em>Dhahabi Agency</em> no es venderte un trámite, es asegurarme de que tu llegada sea un éxito.</p>\n        \n        <div style=\"text-align: center; margin: 30px 0;\">\n            <a href=\"https://soytu.puertadubai.online/catalogo.pdf\" style=\"background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);\">Descargar Catálogo 📩</a>\n        </div>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Échale un vistazo con calma, visualízate allí... y cuando estés listo, hablamos.</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6; margin-top: 40px;\">Con cariño,</p>\n        \n        <div style=\"margin-top: 10px;\">\n            <strong style=\"font-size: 18px;\">Isabel</strong><br>\n            <span style=\"color: #666;\">CEO, Dhahabi Agency</span>\n        </div>\n        \n        <!-- Footer -->\n        <div style=\"margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;\">\n            <!-- Logo Puerta Dubái -->\n            <img src=\"http://62.84.189.155/imagenes/logo%20puertadubai.png\" alt=\"Puerta Dubái\" style=\"max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;\">\n            \n            <p style=\"font-size: 10px; color: #bbb;\">© 2026 Dhahabi Agency</p>\n        </div>\n    </div>\n</div>",
+                "options": {
+                    "allowUnauthorizedCerts": true
+                }
+            },
+            "name": "Gmail SMTP",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 2,
+            "position": [
+                350,
+                60
+            ],
+            "id": "e4f8d9c2-premium-email",
+            "credentials": {
+                "smtp": {
+                    "id": "d9MsDiSEqUJr2oM4",
+                    "name": "Dhahabi Legacy SMTP (Double B)"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Tally Adapter",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Tally Adapter": {
+            "main": [
+                [
+                    {
+                        "node": "Validar Inputs",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Validar Inputs": {
+            "main": [
+                [
+                    {
+                        "node": "Supabase",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Supabase": {
+            "main": [
+                [
+                    {
+                        "node": "Evolution API Final",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Gmail SMTP",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

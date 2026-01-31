@@ -117,6 +117,7 @@ const ContactForm = ({ isOpen, onClose, selectedPackage }: ContactFormProps) => 
                                             id="nombre"
                                             name="nombre"
                                             required
+                                            autoComplete="name"
                                             value={formData.nombre}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all"
@@ -133,6 +134,7 @@ const ContactForm = ({ isOpen, onClose, selectedPackage }: ContactFormProps) => 
                                             id="whatsapp"
                                             name="whatsapp"
                                             required
+                                            autoComplete="tel"
                                             value={formData.whatsapp}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-2 focus:ring-gold focus:border-transparent outline-none transition-all"
