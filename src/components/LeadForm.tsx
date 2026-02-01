@@ -63,7 +63,7 @@ const LeadForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
 
             // 3. Show Success View
             setIsSuccess(true);
-            setTimeout(() => onClose(), 8000); // Auto close after 8s or let user close
+            setTimeout(() => onClose(), 4000); // Auto close after 4s (User request)
 
         } catch (error) {
             console.error('Error enviando formulario:', error);
@@ -125,6 +125,7 @@ const LeadForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
             label: 'Dime tu nombre completo (como aparece en tu pasaporte)',
             type: 'text',
             autoComplete: 'name',
+            htmlName: 'name', // Google Autofill Support
             placeholder: 'Ej: Ana María García'
         },
         {
@@ -132,6 +133,7 @@ const LeadForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
             label: 'Tu correo electrónico para enviarte el catálogo',
             type: 'email',
             autoComplete: 'email',
+            htmlName: 'email', // Google Autofill Support
             placeholder: 'tucorreo@ejemplo.com'
         },
         {
@@ -139,6 +141,7 @@ const LeadForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
             label: 'Tu WhatsApp con el código de tu país',
             type: 'tel',
             autoComplete: 'tel',
+            htmlName: 'tel', // Google Autofill Support
             placeholder: '+53 5555 5555'
         },
         {
@@ -230,6 +233,7 @@ const LeadForm = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void })
                                         onKeyDown={(e) => e.key === 'Enter' && handleNext()}
                                         autoFocus
                                         autoComplete={(currentQ as any).autoComplete}
+                                        name={(currentQ as any).htmlName}
                                     />
                                 )}
                             </div>

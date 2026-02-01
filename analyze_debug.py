@@ -3,8 +3,13 @@ import json
 def run():
     # 1. Check Workflow Config (Credentials)
     try:
-        with open('workflow_debug.json', 'r', encoding='utf-8') as f:
-            wf = json.load(f)
+        # PowerShell redirects are often UTF-16 LE
+        try:
+            with open('workflow_debug.json', 'r', encoding='utf-16') as f:
+                wf = json.load(f)
+        except:
+            with open('workflow_debug.json', 'r', encoding='utf-8') as f:
+                wf = json.load(f)
         
         print("--- Workflow Config Check ---")
         nodes = wf.get('nodes', [])
@@ -18,8 +23,12 @@ def run():
 
     # 2. Check Execution Logs
     try:
-        with open('recent_executions.json', 'r', encoding='utf-8') as f:
-            execs = json.load(f)
+        try:
+            with open('recent_executions.json', 'r', encoding='utf-16') as f:
+                execs = json.load(f)
+        except:
+            with open('recent_executions.json', 'r', encoding='utf-8') as f:
+                execs = json.load(f)
             
         print("\n--- Recent Executions Analysis ---")
         data = execs.get('data', [])

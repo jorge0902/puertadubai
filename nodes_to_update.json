@@ -1,0 +1,21 @@
+[
+    {
+        "name": "Adaptador Web",
+        "parameters": {
+            "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\nconst fullName = getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo') || 'Amigo';\nconst firstName = fullName.trim().split(' ')[0] || 'Amigo';\n// Capitalize\nconst firstNameCap = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();\nconst fullNameCap = fullName.replace(/\\b\\w/g, l => l.toUpperCase());\n\nreturn {\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca est╬ô├▓┬╝Γö£Γöñ╬ô├╢┬ú╬ô├▓├│╬ô├╢┬╝Γö£ΓòæΓò¼├┤Γö£ΓòóΓö¼├║╬ô├╢┬╝Γö£┬ís hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: fullNameCap,\n      PrimerNombre: firstNameCap,\n      nombre_limpio: firstNameCap,\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electr╬ô├▓┬╝Γö£Γöñ╬ô├╢┬ú╬ô├▓├│╬ô├╢┬╝Γö£Γòæ╬ô├▓┬╝Γö£Γöñ╬ô├╢┬ú╬ô├▓├│╬ô├╢┬ú╬ô├«├ënico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
+        }
+    },
+    {
+        "name": "Gmail SMTP",
+        "parameters": {
+            "fromEmail": "puertadubbai@gmail.com",
+            "toEmail": "={{ $json.email || $node['Webhook'].json.body.Email }}",
+            "subject": "¡Hola {{ $node['Adaptador Web'].json.nombre_limpio }}! - Puerta Dubai",
+            "emailFormat": "html",
+            "html": "<html><head><meta charset=\"utf-8\"></head><body style=\"font-family: Arial, sans-serif;\">¡Hola {{ $node['Adaptador Web'].json.nombre_limpio }}! 🌟 No sabes la alegría que me da saludarte. Si estás leyendo esto, es porque algo dentro de ti ya empezó a viajar hacia los Emiratos. 🇦🇪 Sé que dar el paso impone respeto, pero no vas a hacerlo solo. Estoy aquí para guiarte. Con cariño, Isabel.</body></html>",
+            "options": {
+                "allowUnauthorizedCerts": true
+            }
+        }
+    }
+]

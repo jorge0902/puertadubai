@@ -1,0 +1,363 @@
+{
+    "name": "registro-isabel",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "registro-isabel",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                -240,
+                -48
+            ],
+            "id": "460f1e98-2870-4ceb-9a94-53162733b4f0",
+            "webhookId": "a3832d6a-3b62-4feb-aa88-bbccdbed69a9"
+        },
+        {
+            "parameters": {
+                "jsCode": "const fields = items[0].json.data?.fields || [];\n\nconst getVal = (text) => {\n  if (!fields.length) return undefined;\n  const found = fields.find(f => f.label && f.label.toLowerCase().includes(text.toLowerCase()));\n  return found ? found.value : undefined;\n};\n\n// Fallback for direct JSON body (React Form or Tally)\nconst getBodyVal = (key) => items[0].json[key] || items[0].json.body?.[key];\n\nconst fullName = getBodyVal('nombre') || getBodyVal('Nombre') || getBodyVal('name') || getVal('nombre completo') || 'Amigo';\nconst firstName = fullName.trim().split(' ')[0] || 'Amigo';\n// Capitalize\nconst firstNameCap = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();\nconst fullNameCap = fullName.replace(/\\b\\w/g, l => l.toUpperCase());\n\nreturn {\n  json: {\n    body: {\n      proximidad_viaje: getBodyVal('proximidad_viaje') || getVal('cerca est\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00eds hoy'),\n      pasaporte_ok: getBodyVal('pasaporte_ok') || getVal('pasaporte vigente'),\n      presupuesto_rango: getBodyVal('presupuesto_rango') || getVal('presupuesto inicial'),\n      meta_viaje: getBodyVal('meta_viaje') || getVal('meta principal'),\n      Nombre: fullNameCap,\n      PrimerNombre: firstNameCap,\n      Email: getBodyVal('email') || getBodyVal('Email') || getVal('correo electr\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u00ab\u251c\u00ebnico'),\n      WhatsApp: getBodyVal('whatsapp') || getBodyVal('WhatsApp') || getVal('WhatsApp'),\n      interes_contacto: getBodyVal('interes_contacto') || getVal('contacte personalmente')\n    }\n  }\n};"
+            },
+            "name": "Adaptador Web",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                -80,
+                -48
+            ],
+            "id": "tally-adapter-node"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.body.Nombre }}",
+                            "operation": "isNotEmpty"
+                        },
+                        {
+                            "value1": "={{ $json.body.WhatsApp }}",
+                            "operation": "isNotEmpty"
+                        },
+                        {
+                            "value1": "={{ $json.body.Email }}",
+                            "operation": "isNotEmpty"
+                        }
+                    ]
+                }
+            },
+            "name": "Validar Inputs",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                120,
+                -48
+            ],
+            "id": "validation-node-blindaje"
+        },
+        {
+            "parameters": {
+                "tableId": "leads_isabel",
+                "fieldsUi": {
+                    "fieldValues": [
+                        {
+                            "fieldId": "nombre",
+                            "fieldValue": "={{ ($json.body.Nombre || '').toString().toLowerCase().replace(/\\b\\w/g, l => l.toUpperCase()) }}"
+                        },
+                        {
+                            "fieldId": "whatsapp",
+                            "fieldValue": "={{ $json.body.WhatsApp }}"
+                        },
+                        {
+                            "fieldId": "email",
+                            "fieldValue": "={{ $json.body.Email }}"
+                        },
+                        {
+                            "fieldId": "proximidad_viaje",
+                            "fieldValue": "={{ $json.body.proximidad_viaje }}"
+                        },
+                        {
+                            "fieldId": "pasaporte_ok",
+                            "fieldValue": "={{ $json.body.pasaporte_ok }}"
+                        },
+                        {
+                            "fieldId": "presupuesto_rango",
+                            "fieldValue": "={{ $json.body.presupuesto_rango }}"
+                        },
+                        {
+                            "fieldId": "meta_viaje",
+                            "fieldValue": "={{ $json.body.meta_viaje }}"
+                        },
+                        {
+                            "fieldId": "interes_contacto",
+                            "fieldValue": "={{ $json.body.interes_contacto }}"
+                        },
+                        {
+                            "fieldId": "es_vip",
+                            "fieldValue": "={{ (($json.body.presupuesto_rango || '').toString().includes('4,000') || ($json.body.presupuesto_rango || '').toString().includes('Opci\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f6\u00e9\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u00aa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f6\u00e9\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u252c\u00bd\u0393\u00f6\u00a3\u251c\u00bdn C')) ? true : false }}"
+                        }
+                    ]
+                }
+            },
+            "name": "Supabase",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                320,
+                -48
+            ],
+            "id": "24c57921-b7cf-4ba8-ae55-9fecdf54a673",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "adwOlpOVzQbJ5lla",
+                    "name": "Supabase account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.es_vip }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "name": "Check VIP",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                550,
+                150
+            ],
+            "id": "check-vip-node"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"5358249692\",\n  \"textMessage\": {\n    \"text\": \"\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00d1\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u255c *ALERTA VIP* \u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00d1\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u255c\\n\\n\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f6\u00e9\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u251c\u00e6\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1Isabel! Nuevo lead BALLENA detectado (+$4,000 USD). \u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f2\u00fa\\n\\n\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2563\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00e6 *Nombre:* {{ $json.nombre }}\\n\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u00e5\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f2\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa *WhatsApp:* {{ $json.whatsapp }}\\n\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00ac\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f2\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00bc\u252c\u255d *Presupuesto:* {{ $json.presupuesto_rango }}\\n\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00fa\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00ed\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00ee\u00c9\u0393\u00f6\u00bc\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u251c\u00aa\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u00e5\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u2593\u252c\u00d1\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u2524\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2551 *Meta:* {{ $json.meta_viaje }}\\n\\n\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2592\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00a3\u0393\u00f6\u00e9\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00fb\u00f4\u0393\u00f6\u00bc\u251c\u00e6\u256c\u00f4\u251c\u2593\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2593\u251c\u2502\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u0393\u00f2\u00e6\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u0393\u00f2\u00f3\u0393\u00f6\u00bc\u0393\u00f2\u00a5\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1Revisa Supabase!\"\n  }\n}",
+                "options": {}
+            },
+            "name": "Alert Isabel Whatsapp",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                780,
+                150
+            ],
+            "id": "alert-isabel-node"
+        },
+        {
+            "name": "Evolution API Final",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                550,
+                -180
+            ],
+            "id": "258a7445-8f3c-4ea8-99b2-684dba24de02",
+            "retryOnFail": false,
+            "onError": "continueErrorOutput",
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"number\": \"{{ ($json.whatsapp || $json.body.WhatsApp || $node['Webhook'].json.body.WhatsApp).toString().replace(/\\D/g, '') }}\",\n  \"textMessage\": {\n    \"text\": \"\\u00a1Hola, {{ $node['Adaptador Web'].json.body.PrimerNombre }}! \\u2728 Qu\\u00e9 gusto saludarte.\\n\\nSoy Isabel, de Dhahabi Agency. Much\\u00edsimas gracias por registrarte y por tu inter\\u00e9s en lo que estamos construyendo en Dub\\u00e1i. \\ud83c\\udde6\\ud83c\\uddea\\n\\nAcabo de enviarte un regalo de bienvenida a tu correo electr\\u00f3nico: nuestro cat\\u00e1logo exclusivo con todo lo que necesitas saber para empezar en los Emiratos. \\ud83d\\udce9\\n\\nDos cositas r\\u00e1pidas: 1\\ufe0f\\u20e3 Corre a revisar tu bandeja de entrada (si no lo ves, chequea en Spam, \\u00a1a veces Google se pone caprichoso! \\ud83d\\ude05). 2\\ufe0f\\u20e3 Guarda mi n\\u00famero en tus contactos para que siempre estemos conectados por aqu\\u00ed.\\n\\nCualquier duda que tengas, solo escr\\u00edbeme. \\u00a1Estoy lista para ayudarte! \\ud83d\\ude80\"\n  }\n}",
+                "options": {}
+            }
+        },
+        {
+            "parameters": {
+                "fromEmail": "puertadubbai@gmail.com",
+                "toEmail": "={{ $json.email || $node['Webhook'].json.body.Email }}",
+                "subject": "\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00edBienvenido a Dub\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00edi! \u256c\u00f4\u251c\u00bd\u251c\u00a1\u0393\u00f2\u20a7\u251c\u00e5\u0393\u00f6\u00a3\u252c\u2551\u0393\u00f6\u00bc\u252c\u00bc\u256c\u00f4\u251c\u00bd\u251c\u00a1\u0393\u00f2\u20a7\u251c\u00e5\u0393\u00f6\u00a3\u252c\u2551\u0393\u00f6\u00bc\u252c\u255d Tu viaje empieza hoy \u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f6\u00bc\u0393\u00f6\u00c9",
+                "emailFormat": "html",
+                "html": "=<div style=\"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333;\">\n    <!-- Banner -->\n    <img src=\"http://62.84.189.155/imagenes/imagen1.jpg\" alt=\"Puerta Dub\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00edi\" style=\"width: 100%; max-width: 100%; height: auto; display: block;\">\n    \n    <div style=\"padding: 30px;\">\n        <p style=\"font-size: 16px; line-height: 1.6;\">\u256c\u00f4\u251c\u2562\u252c\u255d\u0393\u00f6\u00a3\u252c\u00edHola <strong>{{ $node['Adaptador Web'].json.body.PrimerNombre }}</strong>! \u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f6\u00bc\u0393\u00f6\u00c9</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">No sabes la alegr\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1a que me da saludarte. Si est\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00eds leyendo esto, es porque algo dentro de ti ya empez\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2310 a viajar hacia los Emiratos. \u256c\u00f4\u251c\u00bd\u251c\u00a1\u0393\u00f2\u20a7\u251c\u00e5\u0393\u00f6\u00a3\u252c\u2551\u0393\u00f6\u00bc\u252c\u00bc\u256c\u00f4\u251c\u00bd\u251c\u00a1\u0393\u00f2\u20a7\u251c\u00e5\u0393\u00f6\u00a3\u252c\u2551\u0393\u00f6\u00bc\u252c\u255d\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00bc\u251c\u2551\u0393\u00f6\u00a3\u252c\u00bc\u256c\u00f4\u251c\u00ac\u0393\u00ee\u00c9\u256c\u00f4\u251c\u2593\u251c\u2593\u0393\u00f6\u00a3\u251c\u00e1</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">S\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u00ab\u251c\u00eb que dar el paso impone respeto \u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u251c\u00ba\u0393\u00f6\u00a3\u0393\u00f2\u00f3yo tambi\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u00ab\u251c\u00ebn estuve ah\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1\u0393\u00f2\u00bc\u251c\u2524\u0393\u00f6\u00a3\u251c\u00ba\u0393\u00f6\u00a3\u0393\u00f2\u00f3, pero quiero que sepas algo muy importante: <strong>no vas a hacerlo solo.</strong></p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">Estoy aqu\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1 para ser esa amiga experta que te gu\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1a, te cuida y te ahorra los dolores de cabeza que yo pas\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u00ab\u251c\u00eb. Mi misi\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2562\u251c\u2310n en <em>Dhahabi Agency</em> no es venderte un tr\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00edmite, es asegurarme de que tu llegada sea un \u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u00ab\u251c\u00ebxito.</p>\n        \n        <div style=\"text-align: center; margin: 30px 0;\">\n            <a href=\"https://drive.google.com/uc?export=download&id=1tIqYM9A0fQFF2KILaT204j_07bQ-TtLv\" style=\"background-color: #D4AF37; color: #ffffff; padding: 15px 30px; text-decoration: none; font-weight: bold; font-size: 16px; border-radius: 5px; display: inline-block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(212, 175, 55, 0.3);\">Descargar Cat\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00edlogo \u256c\u00f4\u251c\u00bd\u251c\u00a1\u0393\u00f2\u20a7\u251c\u00e5\u0393\u00f6\u00a3\u0393\u00f6\u00f1\u256c\u00f4\u251c\u00ab\u251c\u00eb</a>\n        </div>\n        \n        <p style=\"font-size: 16px; line-height: 1.6;\">\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u255cchale un vistazo con calma, visual\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1zate all\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00bc\u251c\u00a1... y cuando est\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u00ab\u251c\u00ebs listo, hablamos.</p>\n        \n        <p style=\"font-size: 16px; line-height: 1.6; margin-top: 40px;\">Con cari\u256c\u00f4\u251c\u2562\u252c\u00fa\u256c\u00f4\u251c\u2557\u251c\u00e5o,</p>\n        \n        <div style=\"margin-top: 10px;\">\n            <strong style=\"font-size: 18px;\">Isabel</strong><br>\n            <span style=\"color: #666;\">CEO, Dhahabi Agency</span>\n        </div>\n        \n        <!-- Footer -->\n        <div style=\"margin-top: 50px; padding-top: 30px; border-top: 1px solid #eeeeee; text-align: center;\">\n            <!-- Logo Puerta Dub\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00edi -->\n            <img src=\"http://62.84.189.155/imagenes/logo%20puertadubai.png\" alt=\"Puerta Dub\u256c\u00f4\u251c\u2562\u252c\u00fa\u0393\u00f6\u00a3\u252c\u00edi\" style=\"max-width: 80px; height: auto; display: inline-block; margin-bottom: 5px;\">\n            \n            <p style=\"font-size: 10px; color: #bbb;\">\u256c\u00f4\u251c\u2562\u252c\u255d\u256c\u00f4\u251c\u00ab\u251c\u00eb 2026 Dhahabi Agency</p>\n        </div>\n    </div>\n</div>",
+                "options": {
+                    "allowUnauthorizedCerts": true
+                }
+            },
+            "name": "Gmail SMTP",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 2,
+            "position": [
+                550,
+                0
+            ],
+            "id": "e4f8d9c2-premium-email",
+            "credentials": {
+                "smtp": {
+                    "id": "d9MsDiSEqUJr2oM4",
+                    "name": "Dhahabi Legacy SMTP (Double B)"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "jsonBody": "={\n  \"number\": \"971557976925\",\n  \"textMessage\": {\n    \"text\": \"\\ud83d\\ude80 Nuevo Lead Detectado\\n\\ud83d\\udc64 Nombre: {{ $node['Adaptador Web'].json.body.Nombre }}\\n\\ud83d\\udce7 Email: {{ $node['Adaptador Web'].json.body.Email }}\\n\\ud83d\\udcf1 WhatsApp: {{ $node['Adaptador Web'].json.body.WhatsApp }}\\n\\ud83c\\udfaf Inter\\u00e9s: {{ $node['Adaptador Web'].json.body.Interes }}\"\n  }\n}",
+                "sendBody": true,
+                "contentType": "json",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                }
+            },
+            "name": "Notify Jorge",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                900,
+                200
+            ],
+            "id": "3695c7bf-015d-436a-9fb5-939553cc05ed",
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://62.84.189.155:8080/message/sendText/puertadubai",
+                "jsonBody": "={\n  \"number\": \"971553945213\",\n  \"textMessage\": {\n    \"text\": \"\\ud83d\\ude80 Nuevo Lead Detectado\\n\\ud83d\\udc64 Nombre: {{ $node['Adaptador Web'].json.body.Nombre }}\\n\\ud83d\\udce7 Email: {{ $node['Adaptador Web'].json.body.Email }}\\n\\ud83d\\udcf1 WhatsApp: {{ $node['Adaptador Web'].json.body.WhatsApp }}\\n\\ud83c\\udfaf Inter\\u00e9s: {{ $node['Adaptador Web'].json.body.Interes }}\"\n  }\n}",
+                "sendBody": true,
+                "contentType": "json",
+                "authentication": "none",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "m8mhao5g7e99yrlz4s0dp6"
+                        }
+                    ]
+                }
+            },
+            "name": "Notify Isa",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                900,
+                400
+            ],
+            "id": "f5b3c152-64be-4211-bd88-5ea9767f5236",
+            "credentials": {}
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Adaptador Web",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Adaptador Web": {
+            "main": [
+                [
+                    {
+                        "node": "Validar Inputs",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Notify Jorge",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Notify Isa",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Validar Inputs": {
+            "main": [
+                [
+                    {
+                        "node": "Supabase",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Supabase": {
+            "main": [
+                [
+                    {
+                        "node": "Evolution API Final",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Gmail SMTP",
+                        "type": "main",
+                        "index": 0
+                    },
+                    {
+                        "node": "Check VIP",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Check VIP": {
+            "main": [
+                [
+                    {
+                        "node": "Alert Isabel Whatsapp",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "settings": {
+        "executionOrder": "v1",
+        "availableInMCP": false,
+        "callerPolicy": "workflowsFromSameOwner"
+    }
+}

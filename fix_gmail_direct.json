@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Gmail SMTP",
+        "parameters": {
+            "fromEmail": "puertadubbai@gmail.com",
+            "toEmail": "={{ $json.email || $node['Webhook'].json.body.Email }}",
+            "subject": "¡Hola {{ $json.nombre }}! - Puerta Dubai",
+            "emailFormat": "html",
+            "html": "<html><head><meta charset=\"utf-8\"></head><body style=\"font-family: Arial, sans-serif;\">¡Hola {{ $json.nombre }}! 🌟 No sabes la alegría que me da saludarte. Si estás leyendo esto, es porque algo dentro de ti ya empezó a viajar hacia los Emiratos. 🇦🇪 Sé que dar el paso impone respeto, pero no vas a hacerlo solo. Estoy aquí para guiarte. Con cariño, Isabel.</body></html>",
+            "options": {
+                "allowUnauthorizedCerts": true
+            }
+        }
+    }
+]
