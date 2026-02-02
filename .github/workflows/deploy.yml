@@ -13,34 +13,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: 'just-a-placeholder-so-we-dont-fail'
-        if_key_exists: replace
-
-    - name: Adding Known Hosts
-      run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-
-    - name: Deploy to VPS
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source: "."
-        target: "/var/www/puerta_dubai"
-        strip_components: 0
-
-    - name: Build on VPS
+    - name: Deploy via SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          # Use Docker to build to avoid dependency hell on host
-          docker run --rm -v /var/www/puerta_dubai:/app -w /app node:20 bash -c 'npm install && npm run build'
-          # Reload Nginx just in case
-          systemctl reload nginx
+          cd /var/www/html_nueva
+          # Forzamos la descarga de lo nuevo desde GitHub directamente en la VPS
+          git fetch origin main
+          git reset --hard origin/main
+          # Aseguramos permisos para Nginx
+          chown -R www-data:www-data /var/www/html_nueva
+          chmod -R 755 /var/www/html_nueva
+          sudo systemctl reload nginx
+          
