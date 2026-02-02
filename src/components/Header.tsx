@@ -29,7 +29,7 @@ const Header = () => {
         <header
             className={cn(
                 "fixed w-full z-50 transition-all duration-300 border-b border-white/10",
-                isScrolled ? "bg-plum/95 backdrop-blur-md py-4 shadow-lg" : "bg-black/40 backdrop-blur-sm py-6"
+                isScrolled ? "bg-plum/95 backdrop-blur-md py-4 shadow-lg" : "bg-plum/20 backdrop-blur-sm py-6"
             )}
         >
             <div className="container mx-auto px-4 md:px-8">

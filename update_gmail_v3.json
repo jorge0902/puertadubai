@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Gmail SMTP",
+        "parameters": {
+            "fromEmail": "puertadubai.online@gmail.com",
+            "toEmail": "={{ $json.email || $('Adaptador Web').item.json.body.Email }}",
+            "subject": "={{ '¡Hola ' + $('Adaptador Web').item.json.body.PrimerNombre + '! ✨ - Tu Manual de Aterrizaje en Dubái' }}",
+            "emailFormat": "html",
+            "html": "={{ '<html><head><meta charset=\"utf-8\"><style>body { font-family: Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; } .btn { display: inline-block; background-color: #d4af37; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 20px 0; } .highlight { font-weight: bold; color: #000; } .footer { margin-top: 30px; font-size: 0.9em; color: #666; border-top: 1px solid #eee; padding-top: 20px; }</style></head><body><img src=\"https://puertadubai.online/imagenes/imagen_cabecera.jpg\" alt=\"Dubái\" style=\"width: 100%; border-radius: 8px; margin-bottom: 20px;\">    <p>¡Hola <b>' + $('Adaptador Web').item.json.body.PrimerNombre + '</b>! ✨</p>    <p>No sabes la alegría que me da saludarte. Si estás leyendo esto, es porque algo dentro de ti ya empezó a viajar hacia los Emiratos. 🇦🇪✈️</p>    <p>Sé que dar el paso impone respeto —yo también estuve ahí—, pero quiero que sepas algo muy importante: <span class=\"highlight\">no vas a hacerlo solo</span>.</p>    <p>Estoy aquí para ser esa amiga experta que te guía, te cuida y te ahorra los dolores de cabeza que yo pasé. Mi misión en <i>Dhahabi Agency</i> no es venderte un trámite, es asegurarme de que tu llegada sea un éxito.</p>    <div style=\"text-align: center;\">        <a href=\"https://drive.google.com/file/d/1tIqYM9A0fQFF2KILaT204j_07bQ-TtLv/view?usp=sharing\" class=\"btn\">DESCARGAR MANUAL DE ATERRIZAJE ✈️</a>    </div>    <p>Échale un vistazo con calma, visualízate allí... y cuando estés listo, hablamos.</p>    <div class=\"footer\">        <p>Con cariño,</p>        <p><b style=\"font-size: 1.1em; color: #333;\">Isabel</b><br>        <span style=\"font-size: 0.9em;\">Directora Ejecutiva de Agencia Dhahabi</span></p>        <div style=\"text-align: center; margin-top: 20px;\">            <img src=\"https://puertadubai.online/imagenes/logo_pie.png\" alt=\"Puerta Dubai\" style=\"max-width: 150px;\">        </div>    </div></body></html>' }}",
+            "options": {
+                "allowUnauthorizedCerts": true
+            }
+        }
+    }
+]
